@@ -3,30 +3,47 @@ param(
     [Parameter(Mandatory = $true)]
     [String]
     $InstanceName,
-
+    
     [Parameter(Mandatory = $true)]
     [String]
     $Table,
 
     [Parameter()]
     [String]
-    $Query
+    $Query,
+
+    [Parameter()]
+    [string[]]
+    $Fields,
+
+    [Parameter()]
+    [int32]
+    $Limit
 )
-process {
+
+begin {
     $Uri = (
         "https://" + 
         $InstanceName +
         ".service-now.com/api/now/table/" +
         $Table +
-        "?sysparm_fields=sys_id%2Cnumber%2Cshort_description" +
-        "&sysparm_limit=100"
+        "?sysparm_fields=" +
+        [System.Web.HttpUtility]::UrlEncode($Fields -join ',') +
+        "&sysparm_limit=" +
+        $Limit + 
+        "&sysparm_display_value=true"
     )
+}
 
-    $Response = Invoke-WebRequest -Method Get -Uri $Uri -Credential $Cred
+process {
+
+    #$Fields = ('one', 'two', 'three')
+    #$Fields | Get-Member
+    #[System.Web.HttpUtility]::UrlEncode($Fields)
+
+    $Response = Invoke-WebRequest -Method Get -Uri $Uri -Credential $Cred -Proxy "http://clientproxy.corp.int:8080" -ProxyUseDefaultCredentials
     $Response.Content | ConvertFrom-Json | Select-Object -ExpandProperty result | Sort-Object -Property number
 }
     
 end {
 }
-
-

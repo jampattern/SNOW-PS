@@ -2,15 +2,23 @@
 param(
     [Parameter(Mandatory = $true)]
     [String]
-    $InstanceName
+    $InstanceName,
+
+    [Parameter(Mandatory = $true)]
+    [String]
+    $Table,
+
+    [Parameter()]
+    [String]
+    $Query
 )
 process {
     $Uri = (
         "https://" + 
         $InstanceName +
-        ".service-now.com/api/now" +
-        "/table/problem?" +
-        "sysparm_fields=sys_id%2Cnumber%2Cshort_description" +
+        ".service-now.com/api/now/table/" +
+        $Table +
+        "?sysparm_fields=sys_id%2Cnumber%2Cshort_description" +
         "&sysparm_limit=100"
     )
 

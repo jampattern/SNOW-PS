@@ -14,7 +14,13 @@ param(
     $Fields,
     [Parameter()]
     [int32]
-    $Limit
+    $Limit,
+    [Parameter()]
+    [string]
+    $Proxy,
+    [Parameter()]
+    [switch]
+    $ProxyUseDefaultCrd
 )
 
 begin {
@@ -29,7 +35,6 @@ begin {
     } else {
         $UriLimit = ""    
     }
-    
 
     $Uri = (
         $UriScheme + 
@@ -41,21 +46,24 @@ begin {
         "&sysparm_display_value=true"
     )
 
-    $Args = @{
+    $Conf = @{
         Method = "Get"
         Uri = $Uri
         Credential = Get-Credential
-        Proxy = "http://proxy.example.com:8000"
-        ProxyUseDefaultCredentials = $true
+    }
+
+    if ($Proxy) {
+        $Conf.Proxy = $Proxy
+        if ($ProxyUseDefaultCrd) {
+            $Conf.ProxyUseDefaultCredentials = $true
+        }
     }
 
 }
 
 process {
-
-    $Response = Invoke-WebRequest @Args
+    $Response = Invoke-WebRequest @Conf
     $Response.Content | ConvertFrom-Json | Select-Object -ExpandProperty result | Sort-Object -Property number
-
 }
     
 end {

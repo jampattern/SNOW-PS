@@ -15,6 +15,8 @@ param(
     [Parameter()]
     [int32]
     $Limit,
+    
+    # proxy
     [Parameter()]
     [string]
     $Proxy,
@@ -30,9 +32,10 @@ begin {
     $UriQuery = ""
     $UriFields = "?sysparm_fields=" + [System.Web.HttpUtility]::UrlEncode($Fields -join ',')
     
-    if ($Limit){
+    if ($Limit) {
         $UriLimit = "&sysparm_limit=" + $Limit
-    } else {
+    }
+    else {
         $UriLimit = ""    
     }
 
@@ -47,8 +50,8 @@ begin {
     )
 
     $Conf = @{
-        Method = "Get"
-        Uri = $Uri
+        Method     = "Get"
+        Uri        = $Uri
         Credential = Get-Credential
     }
 

@@ -18,5 +18,6 @@ CHG0000005 Install new PBX                                  Implement @{display_
 ## Attachment API - Examples
 
 ```
-Invoke-WebRequest -Method Post -Uri [...]attachment/file?table_name=sc_req_item&table_sys_id=a8b6ff891b88c010c1f50d0acd4bcbd1&file_name=test.txt -ContentType multipart/form-data -InFile H:\test.txt -Credential Get-Credential
+# POST /now/attachment/file
+Invoke-WebRequest -Method Post -Uri [...]/file?table_name=sc_req_item&table_sys_id=a8b6ff891b88c010c1f50d0acd4bcbd1&file_name=test.txt -ContentType multipart/form-data -InFile H:\test.txt -Credential Get-Credential
 ```

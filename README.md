@@ -6,11 +6,6 @@ Powershell Examples and Scripts to interact with ServiceNow REST APIs
 ```
 .\Get-TableAPI.ps1 -InstanceName "development" -Table "change_request" -Fields "number,short_description,state,assigned_to" -Limit 5
 
-cmdlet Get-Credential at command pipeline position 1
-Supply values for the following parameters:
-User: admin
-Password for user admin: *************
-
 number     short_description                                state     assigned_to   
 ------     -----------------                                -----     -----------   
 CHG0000001 Rollback Oracle Version                          New       @{display_v...

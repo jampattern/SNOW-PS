@@ -2,6 +2,14 @@
 Powershell Examples and Scripts to interact with ServiceNow REST APIs
 
 ## Get-TableAPI.ps1
+Issue a GET request to the Table API
+
+Parameters:
+* InstanceName
+* Table
+* Query (sysparm_query)
+* Fields (sysparm_fields)
+* Limit (sysparm_limit)
 ### Example
 ```
 .\Get-TableAPI.ps1 -InstanceName "development" -Table "change_request" -Fields "number,short_description,state,assigned_to" -Limit 5

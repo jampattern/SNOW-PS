@@ -19,3 +19,9 @@ CHG0000003 Roll back Windows SP2 patch                      Closed    @{display_
 CHG0000004 Upgrade to Oracle 11i                            Review    @{display_v...
 CHG0000005 Install new PBX                                  Implement @{display_v...
 ```
+
+## Attachment API - Examples
+
+```
+Invoke-WebRequest -Method Post -Uri $Uri -ContentType multipart/form-data -InFile H:\test.txt -Credential Get-Credential
+```

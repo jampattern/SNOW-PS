@@ -26,6 +26,36 @@ CHG0000005 Install new PBX                                  Implement @{display_
 ## Attachment API - Examples
 
 ```
-# POST /now/attachment/file
-Invoke-WebRequest -Method Post -Uri [...]/file?table_name=sc_req_item&table_sys_id=a8b6ff891b88c010c1f50d0acd4bcbd1&file_name=test.txt -ContentType multipart/form-data -InFile H:\test.txt -Credential Get-Credential
+# POST api/now/attachment/file
+Invoke-WebRequest -Method Post -Uri [...]/file?table_name=sc_req_item&table_sys_id=a8b6ff891b88c010c1f50d0acd4bcbd1&file_name=test.txt -ContentType multipart/form-data -InFile c:\test.txt -Credential Get-Credential
+```
+
+```
+# GET api/now/attachment/{sys_id}
+Invoke-WebRequest -Method Get -Uri "[...]/56754d12373000105aa7dcc773990ee0" -Credential Get-Credential
+
+{
+  "result": {
+    "size_bytes": "89",
+    "file_name": "type.txt",
+    "sys_mod_count": "0",
+    "average_image_color": "",
+    "image_width": "",
+    "sys_updated_on": "2019-10-31 22:35:20",
+    "sys_tags": "",
+    "table_name": "incident",
+    "sys_id": "56754d12373000105aa7dcc773990ee0",
+    "image_height": "",
+    "sys_updated_by": "admin",
+    "download_link": "[...]/attachment/56754d12373000105aa7dcc773990ee0/file",
+    "content_type": "multipart/form-data",
+    "sys_created_on": "2019-10-31 22:35:20",
+    "size_compressed": "96",
+    "compressed": "true",
+    "state": "",
+    "table_sys_id": "a623cdb073a023002728660c4cf6a768",
+    "chunk_size_bytes": "734003",
+    "sys_created_by": "admin"
+  }
+}
 ```

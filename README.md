@@ -24,15 +24,14 @@ CHG0000005 Install new PBX                                  Implement @{display_
 ```
 
 ## Attachment API - Examples
-
+### POST api/now/attachment/file
 ```
-# POST api/now/attachment/file
 Invoke-WebRequest -Method Post -Uri [...]/file?table_name=sc_req_item&table_sys_id=a8b6ff891b88c010c1f50d0acd4bcbd1&file_name=test.txt -ContentType multipart/form-data -InFile c:\test.txt -Credential Get-Credential
 ```
 
+### GET api/now/attachment/{sys_id}
 ```
-# GET api/now/attachment/{sys_id}
-Invoke-WebRequest -Method Get -Uri "[...]/56754d12373000105aa7dcc773990ee0" -Credential Get-Credential
+Invoke-WebRequest -Method Get -Uri "[...]/api/now/attachment/56754d12373000105aa7dcc773990ee0" -Credential Get-Credential
 
 {
   "result": {
@@ -58,4 +57,15 @@ Invoke-WebRequest -Method Get -Uri "[...]/56754d12373000105aa7dcc773990ee0" -Cre
     "sys_created_by": "admin"
   }
 }
+```
+
+### GET api/now/attachment/{sys_id}/file
+
+```
+$Uri = "[...]]/api/now/attachment/1f543364bf1101007a6d257b3f0739d3"
+$Meta = Invoke-WebRequest -Uri $Uri -Method Get -Credential $Cred
+$Meta = $Meta.Content | ConvertFrom-Json | Select-Object -ExpandProperty result
+
+$File = Invoke-WebRequest -Uri $Meta.download_link -Method Get -Credential $Cred
+[System.IO.File]::WriteAllBytes(".\" + $Meta.file_name, $File.Content)
 ```

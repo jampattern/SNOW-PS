@@ -2,7 +2,7 @@
 param(
     [Parameter(Mandatory = $true)]
     [String]
-    $InstanceName,
+    $Instance,
     [Parameter(Mandatory = $true)]
     [String]
     $Table,
@@ -15,6 +15,9 @@ param(
     [Parameter()]
     [int32]
     $Limit,
+    [Parameter()]
+    [String]
+    $CrdFilePath,
     
     # proxy
     [Parameter()]
@@ -27,32 +30,37 @@ param(
 
 begin {
 
-    $UriScheme = "https://"
-    $UriPath = "/api/now/table/" + $Table
-    $UriQuery = ""
-    $UriFields = "?sysparm_fields=" + [System.Web.HttpUtility]::UrlEncode($Fields -join ',')
-    
-    if ($Limit) {
-        $UriLimit = "&sysparm_limit=" + $Limit
-    }
-    else {
-        $UriLimit = ""    
+    if (Test-Path $CrdFilePath){
+        $Cred = Import-Clixml -Path $CrdFilePath
+    } else {
+        $Cred = Get-Credential
     }
 
-    $Uri = (
-        $UriScheme + 
-        $InstanceName +
-        ".service-now.com" + 
-        $UriPath +
-        $UriFields + 
-        $UriLimit +
-        "&sysparm_display_value=true"
-    )
+
+    $UriBase = "https://" + $Instance + ".service-now.com/api/now"
+    $UriResource = "/table/" + $Table
+
+    $UriQuery = @()
+
+    if ($Fields){
+        $UriQuery += "sysparm_fields=" + [System.Web.HttpUtility]::UrlEncode($Fields)
+    }
+
+    if ($Query){
+        $UriQuery += "sysparm_query=" + [System.Web.HttpUtility]::UrlEncode($Query)
+    }
+
+    if ($Limit){
+        $UriQuery += "sysparm_limit", $Limit -join "="
+    }
+
+    $UriQueryEnc = "?" + ($UriQuery -join "&")
+    $Uri = $UriBase + $UriResource + $UriQueryEnc
 
     $Conf = @{
         Method     = "Get"
         Uri        = $Uri
-        Credential = Get-Credential
+        Credential = $Cred
     }
 
     if ($Proxy) {
@@ -61,12 +69,11 @@ begin {
             $Conf.ProxyUseDefaultCredentials = $true
         }
     }
-
 }
 
 process {
     $Response = Invoke-WebRequest @Conf
-    $Response.Content | ConvertFrom-Json | Select-Object -ExpandProperty result | Sort-Object -Property number
+    $Response.Content | ConvertFrom-Json | Select-Object -ExpandProperty result
 }
     
 end {

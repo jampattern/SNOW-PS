@@ -1,4 +1,4 @@
-# SNOW-PS
+# ps_ServiceNow
 Powershell Examples and Scripts to interact with ServiceNow REST APIs
 
 ## Get-TableAPI.ps1

@@ -1,0 +1,19 @@
+{
+    "Configurations": [
+        {
+            "Name": "GetUserByUserName",
+            "Table": "sys_user",
+            "Instance": "dev54508",
+            "Query": "user_nameLIKELuddy",
+            "Fields": "last_name,first_name,email",
+            "Limit": "2"
+        },
+        {
+            "Name": "GetActiveGroups",
+            "Instance": "dev54508",
+            "Table": "sys_user_group",
+            "Query": "active=true",
+            "Fields": "name,sys_id"
+        }
+    ]
+}

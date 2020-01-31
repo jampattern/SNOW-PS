@@ -8,8 +8,12 @@ Parameters:
 * InstanceName
 * Table
 * Query (sysparm_query)
+* DisplayValue (sysparm_display_value)
+* ExcludeRefLink (sysparm_exclude_reference_link)
 * Fields (sysparm_fields)
 * Limit (sysparm_limit)
+* View (sysparm_view)
+
 ### Example
 ```
 .\Get-TableAPI.ps1 -InstanceName "development" -Table "change_request" -Fields "number,short_description,state,assigned_to" -Limit 5

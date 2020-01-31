@@ -13,12 +13,26 @@ param(
     $Query,
 
     [Parameter()]
+    [ValidateSet("true", "false", "all")]
+    [String]
+    $DisplayValue,
+
+    [Parameter()]
+    [ValidateSet("true", "false")]
+    [String]
+    $ExcludeRefLink,
+
+    [Parameter()]
     [string[]]
     $Fields,
 
     [Parameter()]
-    [int32]
+    [int]
     $Limit,
+
+    [Parameter()]
+    [string]
+    $View,
 
     [Parameter()]
     [String]
@@ -31,19 +45,7 @@ param(
 
     [Parameter()]
     [switch]
-    $ProxyUseDefaultCrd,
-
-    # configuration
-    [ArgumentCompleter( {
-            param ( $commandName,
-                $parameterName,
-                $wordToComplete,
-                $commandAst,
-                $fakeBoundParameters )
-            $possibleValues = Get-Content -Path .\configs.json | ConvertFrom-Json
-            $possibleValues.Configurations | ForEach-Object { $_.Name }
-        })]
-    [String] $Configuration
+    $ProxyUseDefaultCrd
 )
 
 begin {
@@ -57,8 +59,6 @@ begin {
         $Cred = Get-Credential
     }
 
-    
-
     <# ******
     build uri
     ****** #>
@@ -66,21 +66,32 @@ begin {
     $UriResource = "/table/" + $Table
 
     $UriQuery = @()
-    if ($Fields) {
-        $UriQuery += "sysparm_fields=" + [System.Web.HttpUtility]::UrlEncode($Fields)
-    }
-
     if ($Query) {
         $UriQuery += "sysparm_query=" + [System.Web.HttpUtility]::UrlEncode($Query)
+    }
+
+    if ($DisplayValue) {
+        $UriQuery += "sysparm_display_value=" + $DisplayValue
+    }
+
+    if ($ExcludeRefLink) {
+        $UriQuery += "sysparm_exclude_reference_link=" + $ExcludeRefLink
+    }
+       
+    if ($Fields) {
+        $UriQuery += "sysparm_fields=" + [System.Web.HttpUtility]::UrlEncode($Fields)
     }
 
     if ($Limit) {
         $UriQuery += "sysparm_limit", $Limit -join "="
     }
 
+    if ($View) {
+        $UriQuery += "sysparm_view=" + [System.Web.HttpUtility]::UrlEncode($View)
+    }
+
     $UriQueryEnc = "?" + ($UriQuery -join "&")
     $Uri = $UriBase + $UriResource + $UriQueryEnc
-
 
     <# ***********
     request config

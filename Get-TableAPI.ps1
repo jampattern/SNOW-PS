@@ -122,12 +122,13 @@ process {
     }
     catch {
 
-        $LogMessage = 
-        ("Error:",
-            $Error.ErrorRecord.CategoryInfo.Reason -join " "),
-            $Error.ErrorRecord.CategoryInfo.Activity -join ";"
-        
-        $LogMessage
+        $_
+        # $LogMessage = 
+        # ("Error:",
+        #     $Error.ErrorRecord.CategoryInfo.Reason -join " "),
+        #     $Error.ErrorRecord.CategoryInfo.Activity -join ";"
+        # 
+        # $LogMessage
     }
 }
     

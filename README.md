@@ -29,12 +29,14 @@ CHG0000005 Install new PBX                                  Implement @{display_
 
 ## Attachment API - Examples
 ### POST api/now/attachment/file
+Upload an attachment from a binary request
 ```
 $Uri = [...]/file?table_name=sc_req_item&table_sys_id=abc123&file_name=test.txt
 Invoke-WebRequest -Method Post -Uri $Uri -ContentType multipart/form-data -InFile c:\test.txt -Credential Get-Credential
 ```
 
 ### GET api/now/attachment/{sys_id}
+Retrieve metadata for attachments
 ```
 Invoke-WebRequest -Method Get -Uri "[...]/api/now/attachment/56754d12373000105aa7dcc773990ee0" -Credential Get-Credential
 
@@ -65,7 +67,7 @@ Invoke-WebRequest -Method Get -Uri "[...]/api/now/attachment/56754d12373000105aa
 ```
 
 ### GET api/now/attachment/{sys_id}/file
-
+Retrieve attachment content
 ```
 $Uri = "[...]]/api/now/attachment/1f543364bf1101007a6d257b3f0739d3"
 $Meta = Invoke-WebRequest -Uri $Uri -Method Get -Credential $Cred

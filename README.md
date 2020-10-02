@@ -1,6 +1,8 @@
 # ps_ServiceNow
 Powershell Examples and Scripts to interact with ServiceNow REST APIs
 
+[Splatting](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_splatting?view=powershell-7) is used for improved readability.
+
 ## Get-TableAPI.ps1
 Issue a GET request to the Table API
 
@@ -15,64 +17,72 @@ Parameters:
 * View (sysparm_view)
 
 ### Example
-```
-.\Get-TableAPI.ps1 -InstanceName "development" -Table "change_request" -Fields "number,short_description,state,assigned_to" -Limit 5
+```ps
+$Params = @{
+  InstanceName = "development"
+  Table = "change_request"
+  Query = "active=true"
+  Fields = "number,short_description,state,assigned_to"
+  Limit = 5
+}
 
-number     short_description                                state     assigned_to   
-------     -----------------                                -----     -----------   
-CHG0000001 Rollback Oracle Version                          New       @{display_v...
-CHG0000002 Switch Sales over to the new 555 prefix...       Canceled  @{display_v...
-CHG0000003 Roll back Windows SP2 patch                      Closed    @{display_v...
-CHG0000004 Upgrade to Oracle 11i                            Review    @{display_v...
-CHG0000005 Install new PBX                                  Implement @{display_v...
+.\Get-TableAPI.ps1 @Params
+
 ```
 
 ## Attachment API - Examples
 ### POST api/now/attachment/file
-Upload an attachment from a binary request
-```
-$Uri = [...]/file?table_name=sc_req_item&table_sys_id=abc123&file_name=test.txt
-Invoke-WebRequest -Method Post -Uri $Uri -ContentType multipart/form-data -InFile c:\test.txt -Credential Get-Credential
+```ps
+$Params = @{
+  Method = "Post"
+  Uri = "[...]/file?table_name=sc_req_item&table_sys_id=abc123&file_name=test.txt"
+  ContentType = "multipart/formdata"
+  InFile = "test.txt"
+}
+
+Invoke-WebRequest @Params
 ```
 
 ### GET api/now/attachment/{sys_id}
-Retrieve metadata for attachments
-```
-Invoke-WebRequest -Method Get -Uri "[...]/api/now/attachment/56754d12373000105aa7dcc773990ee0" -Credential Get-Credential
-
-{
-  "result": {
-    "size_bytes": "89",
-    "file_name": "type.txt",
-    "sys_mod_count": "0",
-    "average_image_color": "",
-    "image_width": "",
-    "sys_updated_on": "2019-10-31 22:35:20",
-    "sys_tags": "",
-    "table_name": "incident",
-    "sys_id": "56754d12373000105aa7dcc773990ee0",
-    "image_height": "",
-    "sys_updated_by": "admin",
-    "download_link": "[...]/attachment/56754d12373000105aa7dcc773990ee0/file",
-    "content_type": "multipart/form-data",
-    "sys_created_on": "2019-10-31 22:35:20",
-    "size_compressed": "96",
-    "compressed": "true",
-    "state": "",
-    "table_sys_id": "a623cdb073a023002728660c4cf6a768",
-    "chunk_size_bytes": "734003",
-    "sys_created_by": "admin"
-  }
+```ps
+$Params = @{
+  Method = "Get"
+  Uri = ".../api/now/attachment/40f93e17"
 }
+
+$Response = Invoke-WebRequest @Params
+
+$Meta = $ResponseMeta.Content |
+ConvertFrom-Json |
+Select-Object -ExpandProperty result
+
+$Meta
+
+<#
+size_bytes          : 5120
+file_name           : incident.xls
+download_link       : https://dev.sn.com/api/now/attachment/40f93e16c0a801130137c1f1bf538539/file
+content_type        : application/vnd.ms-excel
+.
+.
+.
+#>
 ```
 
 ### GET api/now/attachment/{sys_id}/file
-Retrieve attachment content
-```
-$Uri = "[...]]/api/now/attachment/1f543364bf1101007a6d257b3f0739d3"
-$Meta = Invoke-WebRequest -Uri $Uri -Method Get -Credential $Cred
-$Meta = $Meta.Content | ConvertFrom-Json | Select-Object -ExpandProperty result
+Gets the content of an attachment.  
+The `x-attachment-metadata` header contains the same data that is returned by a request to `api/now/attachment/{sys_id}`
+```ps
 
-$File = Invoke-WebRequest -Uri $Meta.download_link -Method Get -Credential $Cred
-[System.IO.File]::WriteAllBytes(".\" + $Meta.file_name, $File.Content)
-```
+$Params = @{
+  Method = "Get"
+  Uri = ".../api/now/attachment/40f93e17/file"
+}
+
+$Response = Invoke-WebRequest @Params
+$Meta = $Response.Headers.'x-attachment-metadata' | 
+ConvertFrom-Json
+
+# write content to file
+[System.IO.File]::WriteAllBytes($Meta.file_name, $Response.Content)
+

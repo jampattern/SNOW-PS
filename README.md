@@ -58,15 +58,14 @@ Select-Object -ExpandProperty result
 
 $Meta
 
-<#
-size_bytes          : 5120
-file_name           : incident.xls
-download_link       : https://dev.sn.com/api/now/attachment/40f93e16c0a801130137c1f1bf538539/file
-content_type        : application/vnd.ms-excel
-.
-.
-.
-#>
+
+# size_bytes          : 5120
+# file_name           : incident.xls
+# download_link       : https://dev.sn.com/api/now/attachment/123.../file
+# content_type        : application/vnd.ms-excel
+# .
+# .
+# .
 ```
 
 ### GET api/now/attachment/{sys_id}/file

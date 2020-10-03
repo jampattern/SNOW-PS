@@ -17,7 +17,7 @@ Parameters:
 * View (sysparm_view)
 
 ### Example
-```ps
+```PowerShell
 $Params = @{
   InstanceName = "development"
   Table = "change_request"
@@ -32,7 +32,7 @@ $Params = @{
 
 ## Attachment API - Examples
 ### POST api/now/attachment/file
-```ps
+```PowerShell
 $Params = @{
   Method = "Post"
   Uri = "[...]/file?table_name=sc_req_item&table_sys_id=abc123&file_name=test.txt"
@@ -44,7 +44,7 @@ Invoke-WebRequest @Params
 ```
 
 ### GET api/now/attachment/{sys_id}
-```ps
+```PowerShell
 $Params = @{
   Method = "Get"
   Uri = ".../api/now/attachment/40f93e17"
@@ -71,7 +71,7 @@ $Meta
 ### GET api/now/attachment/{sys_id}/file
 Gets the content of an attachment.  
 The `x-attachment-metadata` header contains the same data that is returned by a request to `api/now/attachment/{sys_id}`
-```ps
+```PowerShell
 
 $Params = @{
   Method = "Get"
